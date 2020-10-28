@@ -17,24 +17,28 @@ public class MySocketServer extends Thread {
     @Override
     public void run() {
         System.out.println("Server started!");
-        try (ServerSocket server = new ServerSocket(PORT, 50, InetAddress.getByName(ADDRESS));
-             Socket socket = server.accept(); // accepting a new client
-             DataInputStream input = new DataInputStream(socket.getInputStream());
-             DataOutputStream output  = new DataOutputStream(socket.getOutputStream());
-        ) {
-                    ObjectOutputStream os = new ObjectOutputStream(socket.getOutputStream());
-                    ObjectInputStream is = new ObjectInputStream(socket.getInputStream());
-                    Params receivedParams = new Params();
-                    receivedParams = (Params) is.readObject();
-                    System.out.println("Received: " + receivedParams);
-                    String response = processParams(receivedParams);
-                    System.out.println("Sent: " + response);
-                    output.writeUTF(response); // resend it to the client
-                    if (response.equals("OK")){
-                        this.interrupt();
-                    }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        while (true){
+            try (ServerSocket server = new ServerSocket(PORT, 50, InetAddress.getByName(ADDRESS));
+                 Socket socket = server.accept(); // accepting a new client
+                 ObjectInputStream is = new ObjectInputStream(socket.getInputStream());
+                 DataOutputStream output  = new DataOutputStream(socket.getOutputStream());
+            ) {
+
+                Params receivedParams = (Params) is.readObject();
+                System.out.println("Received: " + receivedParams);
+                String response = processParams(receivedParams);
+                System.out.println("Sent: " + response);
+                output.writeUTF(response); // resend it to the client
+                if (response.equals("OK") && receivedParams.getType().equals("exit")){
+                    socket.close();
+                    return;
+                    //this.interrupt();
+                    //System.out.println("close" );
+
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -58,7 +62,7 @@ public class MySocketServer extends Thread {
                     if (key < 1 || key > 1000 || !stringHashMap.containsKey(key)) {
                         return "ERROR";
                     }
-                    return params.getData();
+                    return stringHashMap.get(key);
                 case "delete":
                     key = Integer.parseInt(params.getIndex());
                     if (key < 1 || key > 1000) {
