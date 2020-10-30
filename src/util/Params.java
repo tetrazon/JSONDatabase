@@ -12,23 +12,23 @@ public class Params implements Serializable {
     @Parameter(names = "-t", description = "Type of the command. Can be 'set', 'get', 'delete', 'exit'")
     private String type;
 
-    @Parameter(names = "-i", description = "Index of the cell(1-1000)")
-    private String index;
+    @Parameter(names = "-k", description = "key of the cell")
+    private String key;
 
-    @Parameter(names = "-m", description = "Data of the cell")
-    private String data;
+    @Parameter(names = "-v", description = "Data of the cell")
+    private String value;
 
     public Params(){};
 
     public Params(String type, String i) {
         this.type = type;
-        this.index = i;
+        this.key = i;
     }
 
     public Params(String type, String i, String data) {
         this.type = type;
-        this.index = i;
-        this.data = data;
+        this.key = i;
+        this.value = data;
     }
 
     public static Params getInstance(String[] args){
@@ -42,7 +42,7 @@ public class Params implements Serializable {
 
     @Override
     public String toString() {
-        return  checkField(type) + " " + checkField(index) + " " + checkField(data);
+        return  checkField(type) + " " + checkField(key) + " " + checkField(value);
     }
 
     private String checkField(String field){
@@ -57,20 +57,20 @@ public class Params implements Serializable {
         this.type = type;
     }
 
-    public String getIndex() {
-        return index;
+    public String getKey() {
+        return key;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getData() {
-        return data;
+    public String getValue() {
+        return value;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setValue(String value) {
+        this.value = value;
     }
 
 
