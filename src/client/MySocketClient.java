@@ -6,6 +6,9 @@ import util.Params;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MySocketClient extends Thread{
     private static final int PORT = 22222;
@@ -24,10 +27,24 @@ public class MySocketClient extends Thread{
              ObjectOutputStream os = new ObjectOutputStream(client.getOutputStream());
              ObjectInputStream is = new ObjectInputStream(client.getInputStream())
              ) {
-            Params sentParams = Params.getInstance(args);
-            Gson gson = new Gson();
-            os.writeObject(gson.toJson(sentParams));
-            System.out.println("Sent: " + gson.toJson(sentParams));
+            String stringJson = "";
+            if (args[0].equals("-in")){
+                //File file = new File("F:\\java_project_idea\\JSON Database\\JSON Database\\task\\src\\client\\data\\" + args[1]);
+               /* try(BufferedReader reader = new BufferedReader(new FileReader("/client/data/" + args[1]));) {
+                    stringJson = reader.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+                Path path = Paths.get("F:\\java_project_idea\\JSON Database\\JSON Database\\task\\src\\client\\data\\" + args[1]);
+                stringJson = Files.readString(path);
+            } else {
+                Params sentParams = Params.getInstance(args);
+                Gson gson = new Gson();
+                stringJson = gson.toJson(sentParams);
+            }
+
+            os.writeObject(stringJson);
+            System.out.println("Sent: " + stringJson);
             String stringJsonFromServer = (String) is.readObject();
 
             System.out.println("Received: " + stringJsonFromServer);

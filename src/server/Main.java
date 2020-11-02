@@ -5,11 +5,11 @@ public class Main {
     public static void main(String[] args) {
         MySocketServer mySocketServer = new MySocketServer();
         mySocketServer.start();
-        try {
+        /*try {
             mySocketServer.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
